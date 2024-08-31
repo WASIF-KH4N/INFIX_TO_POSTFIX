@@ -1,73 +1,75 @@
-#include 
+#include <iostream>
+#include <stack>
+#include <string>
 using namespace std;
 
-int precedence (char c) {
-    if (c == '^') {
-        return 3;
-    }
-    else if (c == '/' || c == '*') {
-        return 2;
-    }
-    else if (c == '+' || c == '-') {
+// Function to check the precedence of operators
+int precedence(char op)
+{
+    if (op == '+' || op == '-')
         return 1;
-    }
-    else {
-        return 0;
-    }
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
 }
 
-//Function check whether the given character is Operand or not
-bool isOperand (char c) {
-    if ((c >= 'a' && c = 'A' && c = '0' && c <= '9')) {
-        return true;
-    }
-    return false;
-}
+// Function to convert infix expression to postfix
+// expression
+string infixToPostfix(string infix)
+{
+    stack<char> st;
+    string postfix = "";
+    for (int i = 0; i < infix.length(); i++) {
+        char c = infix[i];
 
-//Function for converting a infix expression to postfix expression
-string infixToPostfix (string s) {
-    stack st; 
-    string postFix;
+        // If the scanned character is an operand, add it to
+        // output string.
+        if (isalnum(c))
+            postfix += c;
 
-    for(int i = 0; i < s.length(); i++) {
-        if (isOperand(s[i])) {
-            postFix += s[i];
-        }
-        else if (s[i] == '(') {
+        // If the scanned character is an '(', push it to
+        // the stack.
+        else if (c == '(')
             st.push('(');
-        }
-        else if (s[i] == ')') {
-            while(st.top() != '(') {
-                postFix += st.top();
+
+        // If the scanned character is an ')', pop and to
+        // output string from the stack until an '(' is
+        // encountered.
+        else if (c == ')') {
+            while (st.top() != '(') {
+                postfix += st.top();
                 st.pop();
             }
             st.pop();
         }
+
+        // If an operator is scanned
         else {
-            while (!st.empty() && precedence(s[i]) <= precedence(st.top())) {
-                postFix += st.top();
+            while (!st.empty()
+                   && precedence(c)
+                          <= precedence(st.top())) {
+                postfix += st.top();
                 st.pop();
             }
-            st.push(s[i]);
+            st.push(c);
         }
     }
 
+    // Pop all the remaining elements from the stack
     while (!st.empty()) {
-        postFix += st.top();
+        postfix += st.top();
         st.pop();
     }
 
-    return postFix;
+    return postfix;
 }
-
-
 
 int main()
 {
-    string exp = "a+b*(c^d-e)^(f+g*h)-i";
-  
-    // Function call
-    cout<<infixToPostfix(exp);
-    
+    string infix = "AB+CD";
+    cout << "Infix Expression: " << infix << endl;
+    cout << "Postfix Expression: " << infixToPostfix(infix)<< endl;
     return 0;
 }
+
+
