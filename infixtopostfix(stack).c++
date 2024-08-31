@@ -1,6 +1,5 @@
 #include <iostream>
 #include <stack>
-#include <string>
 using namespace std;
 
 // Function to check the precedence of operators
